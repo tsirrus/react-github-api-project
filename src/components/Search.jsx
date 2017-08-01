@@ -18,7 +18,7 @@ class Search extends React.Component {
     }
     _handleSubmit(e) {
         e.preventDefault();
-        history.push(`/user/${this.refs.userInput.value}`)
+        history.push(`/user/${this.refs.userInput.value}`);
     }
 
     render() {
@@ -32,6 +32,6 @@ class Search extends React.Component {
             </div>
         );
     }
-};
+}
 
 export default Search;
