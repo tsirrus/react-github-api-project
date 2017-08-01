@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import getGithubToken from '../APIKeys.js';
 
 class User extends React.Component {
     constructor() {
@@ -20,7 +21,8 @@ class User extends React.Component {
     When `render` gets called again, `this.state.user` exists and we get the user info display instead of "LOADING..."
     */
     componentDidMount() {
-        fetch(`https://api.github.com/users/${this.props.params.username}`)
+        var GITHUB_API_TOKEN = getGithubToken();
+        fetch(`https://api.github.com/users/${this.props.params.username}?access_token=${GITHUB_API_TOKEN}`)
         .then(response => response.json())
         .then(
             user => {
@@ -89,9 +91,10 @@ class User extends React.Component {
                         {stats.map(this.renderStat)}
                     </ul>
                 </div>
+                {this.props.children}
             </div>
         );
     }
-};
+}
 
 export default User;
