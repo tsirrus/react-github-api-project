@@ -8,7 +8,7 @@ var ulStyle = {
     justifyContent : "flex-start"
 };
 
-class Followers extends React.Component {
+class Following extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -18,7 +18,7 @@ class Followers extends React.Component {
     
     componentDidMount(){
         var GITHUB_API_TOKEN = getGithubToken();
-        fetch(`https://api.github.com/users/${this.props.params.username}/followers?access_token=${GITHUB_API_TOKEN}`)
+        fetch(`https://api.github.com/users/${this.props.params.username}/following?access_token=${GITHUB_API_TOKEN}`)
         .then(response => response.json())
         .then(followers => {
             //console.log("Followers=",followers); //Test
@@ -36,8 +36,8 @@ class Followers extends React.Component {
         });
     }
     
-    summonFollower(follower){
-         return <GithubUser key={follower.username} username={follower.username} avatar_url={follower.avatar_url} />;
+    summonFollowing(follow){
+         return <GithubUser key={follow.username} username={follow.username} avatar_url={follow.avatar_url} />;
     }
     
     render(){
@@ -45,11 +45,11 @@ class Followers extends React.Component {
             <div className="followers-page">
                 <h3>Followers of {this.props.params.username}</h3>
                 <ul style={ulStyle}>
-                    {this.state.followers.map(follower => {return this.summonFollower(follower)})}
+                    {this.state.followers.map(follow => {return this.summonFollowing(follow)})}
                 </ul>
             </div>
         );
     }
 }
 
-export default Followers;
+export default Following;

@@ -12,6 +12,7 @@ import App from './components/App';
 import Search from './components/Search';
 import User from './components/User';
 import Followers from './components/Followers';
+import Following from './components/Following';
 
 /*
 Rendering a router will output the right component tree based on the current URL.
@@ -27,6 +28,7 @@ const routes = (
             <IndexRoute component={Search}/>
             <Route path="user/:username" component={User}>
               <Route path="followers" component={Followers} />
+              <Route path="following" component={Following} />
             </Route>
         </Route>
     </Router>

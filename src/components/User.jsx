@@ -20,7 +20,7 @@ class User extends React.Component {
     the data -- in the callback -- we call `setState` to put the user data in our state. This will trigger a re-render.
     When `render` gets called again, `this.state.user` exists and we get the user info display instead of "LOADING..."
     */
-    componentDidMount() {
+    fetchUser() {
         var GITHUB_API_TOKEN = getGithubToken();
         fetch(`https://api.github.com/users/${this.props.params.username}?access_token=${GITHUB_API_TOKEN}`)
         .then(response => response.json())
@@ -35,6 +35,17 @@ class User extends React.Component {
         );
     }
 
+    componentDidMount(){
+        this.fetchUser();
+    }
+    
+    componentDidUpdate(prevProps,prevState){
+        //console.log("Prev username=",prevProps.params.username);
+        //console.log("Current username=",this.props.params.username);
+        if (prevProps.params.username !== this.props.params.username) {
+            this.fetchUser();
+        }
+    }
     /*
     This method is used as a mapping function. Eventually this could be factored out to its own component.
     */
