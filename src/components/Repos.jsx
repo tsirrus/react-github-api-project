@@ -19,6 +19,8 @@ class Repos extends React.Component {
             loadEnd: false
         };
         this.fetchRepos = this.fetchRepos.bind(this);
+        this.infiniteLoad = this.infiniteLoad.bind(this);
+        this.listRepos = this.listRepos.bind(this);
     }
     
     fetchRepos(){
@@ -56,9 +58,14 @@ class Repos extends React.Component {
                     this.setState({
                         loading: false,
                         loadEnd: true
-                    })
+                    });
                 }
-                //console.log("state Repos=",this.state.repos);
+            });
+        }
+        else {
+            //Prevent isInfiniteLoading from sticking to true
+            this.setState({
+                loading: false
             });
         }
     }
@@ -71,6 +78,12 @@ class Repos extends React.Component {
          );
     }
     
+    infiniteLoad() {
+        return (
+            <div>Loading!!!!</div>
+        );
+    }
+    
     render(){
         return (
             <div className="repos-page">
@@ -81,6 +94,7 @@ class Repos extends React.Component {
                     elementHeight={22} 
                     infiniteLoadBeginEdgeOffset={100} 
                     useWindowAsScrollContainer={true}
+                    loadingSpinnerDelegate={this.infiniteLoad()}
                 >
                     {this.state.repos.map(repo => {return this.listRepos(repo)})}
                 </Infinite>
