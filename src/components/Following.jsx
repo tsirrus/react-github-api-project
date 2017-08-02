@@ -1,52 +1,84 @@
 import React from 'react';
 import GithubUser from './GithubUser';
 import getGithubToken from '../APIKeys.js';
+import Infinite from 'react-infinite';
 
-var ulStyle = {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent : "flex-start"
-};
+// var ulStyle = {
+//     display: "flex",
+//     flexDirection: "column",
+//     justifyContent : "flex-start"
+// };
 
 class Following extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            followers: []
+            following: [],
+            page: 1,
+            loading: false,
+            loadEnd: false
         };
+        this.fetchUser = this.fetchUser.bind(this);
     }
     
-    componentDidMount(){
-        var GITHUB_API_TOKEN = getGithubToken();
-        fetch(`https://api.github.com/users/${this.props.params.username}/following?access_token=${GITHUB_API_TOKEN}`)
-        .then(response => response.json())
-        .then(followers => {
-            //console.log("Followers=",followers); //Test
-            
-            var formattedFollowers = followers.map(follower => {
-                return {
-                    username: follower.login,
-                    avatar_url: follower.avatar_url
-                };
-            });
-            
+    fetchUser(){
+        if (!this.state.loadEnd) {
+            var GITHUB_API_TOKEN = getGithubToken();
             this.setState({
-                 followers: formattedFollowers
+                loading: true
             });
-        });
+            
+            fetch(`https://api.github.com/users/${this.props.params.username}/following?page=${this.state.page}&per_page=50&access_token=${GITHUB_API_TOKEN}`)
+            .then(response => response.json())
+            .then(following => {
+                if (following.length > 0) {
+
+                    var currentFollowing = this.state.following;
+                    var formattedFollowing = following.map(user => {
+                        return {
+                            username: user.login,
+                            avatar_url: user.avatar_url
+                        };
+                    });
+                    
+                    var totalFollowing = currentFollowing.concat(formattedFollowing);
+                    this.setState({
+                         following: totalFollowing,
+                         loading: false,
+                         page: this.state.page + 1
+                    });
+                }
+                else {
+                    this.setState({
+                        loading: false,
+                        loadEnd: true
+                    });
+                }
+            });
+        }
     }
     
     summonFollowing(follow){
-         return <GithubUser key={follow.username} username={follow.username} avatar_url={follow.avatar_url} />;
+         return (
+             <div key={follow.username}>
+                <GithubUser username={follow.username} avatar_url={follow.avatar_url} />
+            </div>
+        );
     }
     
     render(){
         return (
-            <div className="followers-page">
-                <h3>Followers of {this.props.params.username}</h3>
-                <ul style={ulStyle}>
-                    {this.state.followers.map(follow => {return this.summonFollowing(follow)})}
-                </ul>
+            <div className="following-page">
+                <h3>{this.props.params.username} is following:</h3>
+                <Infinite 
+                    isInfiniteLoading={this.state.loading} 
+                    onInfiniteLoad={this.fetchUser} 
+                    elementHeight={80} 
+                    infiniteLoadBeginEdgeOffset={100} 
+                    useWindowAsScrollContainer={true}
+                >
+                    {this.state.following.map(follow => {return this.summonFollowing(follow)})}
+                </Infinite>
             </div>
         );
     }

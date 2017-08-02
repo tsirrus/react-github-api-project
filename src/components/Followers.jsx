@@ -60,11 +60,6 @@ class Followers extends React.Component {
         }
     }
     
-    componentDidMount(){
-
-        //this.fetchUser();
-    }
-    
     summonFollower(follower){
          return (
              <div key={follower.username} >
