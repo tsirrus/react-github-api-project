@@ -58,6 +58,11 @@ class Followers extends React.Component {
                 //console.log("currentState=",this.state);
             });
         }
+        else {
+            this.setState({
+                loading: false
+            });
+        }
     }
     
     summonFollower(follower){

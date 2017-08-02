@@ -56,6 +56,11 @@ class Following extends React.Component {
                 }
             });
         }
+        else {
+            this.setState({
+                loading: false
+            });
+        }
     }
     
     summonFollowing(follow){
